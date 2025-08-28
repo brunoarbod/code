@@ -1,0 +1,214 @@
+/* ===============================
+   style.css 
+   =============================== */
+:root{
+  --bg:#0f172a; --fg:#e5e7eb; --muted:#94a3b8;
+  --card:#0b1220; --border:#334155; --gridline:#0b1220;
+  --accent:#22d3ee; --good:#22c55e; --bad:#ef4444; --warn:#eab308;
+
+  /* Palette “vives” par type */
+  --c-champ-1:#3be889; --c-champ-2:#0fa766; /* vert */
+  --c-route-1:#64b5ff; --c-route-2:#1c6ee8; /* bleu */
+  --c-ville-1:#ff7a7a; --c-ville-2:#d93250; /* rouge/rose */
+  --c-village-1:#ffd76b; --c-village-2:#e19a00; /* jaune/orange */
+  --c-rien-1:#101827; --c-rien-2:#0b1220; /* neutre */
+
+  /* Lueurs internes (subtiles) */
+  --glow-champ: rgba(59,232,137,.22);
+  --glow-route: rgba(100,181,255,.22);
+  --glow-ville: rgba(255,122,122,.22);
+  --glow-village: rgba(255,215,107,.22);
+
+  /* Ombre commune */
+  --inset: 0 6px 18px rgba(0,0,0,.25) inset, 0 0 0 1px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--fg);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+}
+a{color:#93c5fd; text-decoration:none} a:hover{text-decoration:underline}
+
+/* ---------- Disposition générique ---------- */
+main{padding:16px}
+.container{max-width:1200px; margin:0 auto}
+.row{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:8px 0}
+.row-between{display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+.hidden{display:none !important}
+
+/* ---------- Header ---------- */
+header{
+  position:sticky; top:0; z-index:10;
+  background:linear-gradient(180deg, #0b1020, #0b1020b0 80%, transparent);
+  padding:12px 16px; border-bottom:1px solid #151a2a;
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap; justify-content:space-between;
+}
+header h1{font-size:18px; margin:0}
+
+/* ---------- Cartes & badges ---------- */
+.card{background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px}
+.badge,.tag,.xy{
+  padding:4px 8px; border:1px solid var(--border); border-radius:999px;
+  font-size:12px; color:var(--muted); background:#0b1220
+}
+.help{font-size:13px; color:var(--muted)}
+.help.ok{color:var(--good)} .help.err{color:var(--bad)}
+
+/* ---------- Boutons / Inputs ---------- */
+.btn{
+  background:#111827; border:1px solid var(--border); color:var(--fg);
+  padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; line-height:1;
+}
+.btn:hover{border-color:#475569} .btn:disabled{opacity:.55; cursor:not-allowed}
+.btn.small{padding:6px 10px; font-size:12px} .btn.alt{background:#0b1220}
+.btn.primary{background:#0f2a3f; border-color:#1e3a5f}
+input,select{padding:10px; border-radius:10px; border:1px solid var(--border); background:#0f172a; color:var(--fg)}
+
+/* ---------- Légende ---------- */
+.legend{display:flex; gap:10px; align-items:center; flex-wrap:wrap; color:var(--muted); font-size:13px}
+.legend .sw{display:inline-block; width:14px; height:14px; border-radius:3px; margin-right:6px; border:1px solid #0003}
+.sw.champ{background:#1a2d14} .sw.route{background:#1a2136}
+.sw.ville{background:#2d1a1a} .sw.village{background:#2d281a}
+.sw.rien{background:#101317; border-style:dashed}
+
+/* ---------- Grille / Plateau ---------- */
+.gridwrap{overflow:auto; border:1px solid var(--border); border-radius:16px; padding:16px; background:#0a0f1d}
+.board{
+  display:grid; gap:8px;
+  background:
+    linear-gradient(90deg, transparent 0 49%, var(--gridline) 0 51%, transparent 0),
+    linear-gradient(0deg, transparent 0 49%, var(--gridline) 0 51%, transparent 0);
+  background-size:56px 56px; padding:8px; min-height:200px;
+}
+
+/* ---------- Tuiles (grandes + miniatures + aliases + fallback) ---------- */
+/* Conteneur (grandes) */
+.tile, .tuile, .board > div{
+  width:110px; height:110px; border:1px solid #1f2a44; border-radius:14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.10)), var(--c-rien-2);
+  display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr);
+  position:relative; overflow:hidden; box-shadow: var(--inset);
+}
+/* Conteneur (miniatures) */
+.tile-mini, .tuile-mini{
+  width:90px; height:90px; border:1px solid #1f2a44; border-radius:10px;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.10)), var(--c-rien-2);
+  display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr);
+  position:relative; overflow:hidden; box-shadow: var(--inset);
+}
+
+/* Placement des cellules */
+.cell{border:1px solid #0002}
+.n{grid-column:2; grid-row:1} .e{grid-column:3; grid-row:2}
+.s{grid-column:2; grid-row:3} .o{grid-column:1; grid-row:2} .c{grid-column:2; grid-row:2; border-radius:8px}
+.n2{grid-column:2; grid-row:1} .e2{grid-column:3; grid-row:2}
+.s2{grid-column:2; grid-row:3} .o2{grid-column:1; grid-row:2} .c2{grid-column:2; grid-row:2; border-radius:8px}
+
+/* États d’interaction */
+.tile.selectable,.tuile.selectable{cursor:pointer; outline:2px dashed #243041}
+.tile.selected,.tile.select,.tuile.selected,.tuile.select{box-shadow:0 0 0 2px var(--accent),0 0 16px rgba(34,211,238,.35), inset 0 0 0 1px #0005}
+.tile.disabled,.tuile.disabled{opacity:.45; filter:grayscale(.25)}
+.tile.vide,.tuile.vide{cursor:pointer}
+
+/* Étiquettes dans la tuile */
+.tile .meta,.tuile .meta{
+  position:absolute; top:6px; left:6px; right:6px;
+  display:flex; justify-content:space-between; gap:6px; font-size:11px; color:var(--muted)
+}
+.tile .foot,.tuile .foot{
+  position:absolute; bottom:6px; left:6px; right:6px; display:flex; justify-content:space-between; gap:6px; font-size:11px; color:#cbd5e1
+}
+.status.closed{color:var(--good)} .status.open{color:var(--warn)}
+
+/* ---------- Cellules très colorées (textures + dégradés + glow) ---------- */
+/* Conseil: si tu veux plus “flat”, supprime la ligne repeating-linear-gradient(...) de chaque type */
+.champ{
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,0) 60%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 6px, rgba(0,0,0,.06) 6px 12px),
+    radial-gradient(80% 80% at 30% 20%, rgba(255,255,255,.10), transparent 60%),
+    linear-gradient(135deg, var(--c-champ-1), var(--c-champ-2));
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25), inset 0 0 18px var(--glow-champ);
+}
+.route{
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,0) 60%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 6px, rgba(0,0,0,.05) 6px 12px),
+    radial-gradient(80% 80% at 30% 20%, rgba(255,255,255,.10), transparent 60%),
+    linear-gradient(135deg, var(--c-route-1), var(--c-route-2));
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25), inset 0 0 18px var(--glow-route);
+}
+.ville{
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,0) 60%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 6px, rgba(0,0,0,.06) 6px 12px),
+    radial-gradient(80% 80% at 30% 20%, rgba(255,255,255,.10), transparent 60%),
+    linear-gradient(135deg, var(--c-ville-1), var(--c-ville-2));
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25), inset 0 0 18px var(--glow-ville);
+}
+.village{
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.12), rgba(255,255,255,0) 60%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.06) 0 6px, rgba(0,0,0,.06) 6px 12px),
+    radial-gradient(80% 80% at 30% 20%, rgba(255,255,255,.10), transparent 60%),
+    linear-gradient(135deg, var(--c-village-1), var(--c-village-2));
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25), inset 0 0 18px var(--glow-village);
+}
+.rien{
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,0) 60%),
+    linear-gradient(135deg, var(--c-rien-1), var(--c-rien-2));
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.35);
+}
+
+/* ---------- Overlays (liaisons) plus visibles ---------- */
+.tile svg.overlay, .overlay, .tuile svg.overlay{
+  position:absolute; inset:0; width:100%; height:100%; pointer-events:none; filter: drop-shadow(0 0 2px #000a);
+}
+.overlay path{fill:none; stroke-width:3.5}
+.overlay path.route{stroke:#79b6ff}
+.overlay path.ville{stroke:#ff8a8a}
+.overlay path.champ{stroke:#9af0bf}
+.overlay path.village{stroke:#ffd982}
+.overlay circle.open{fill:var(--warn)} .overlay circle.closed{fill:var(--good)}
+
+/* ---------- Galerie de modèles ---------- */
+.models{display:grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap:10px}
+.model,.model-card{
+  background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px; cursor:pointer;
+  transition:transform .06s ease, border-color .12s ease
+}
+.model:hover,.model-card:hover{border-color:#6b7280; transform: translateY(-1px)}
+.model.active,.model-card.active{outline:2px solid var(--accent); box-shadow:0 0 16px rgba(34,211,238,.28)}
+.model .id,.model-card .id{font-size:12px; color:#cbd5e1; text-align:center}
+.model .hint,.model-card .hint{font-size:11px; color:var(--muted); text-align:center}
+
+/* ---------- Toolbar ---------- */
+.toolbar{
+  position:fixed; bottom:0; left:0; right:0; background:#0c111f;
+  border-top:1px solid #151a2a; padding:12px 16px;
+  display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; z-index:20;
+}
+.export{display:flex; gap:8px; flex-wrap:wrap}
+
+/* ---------- Modales / Tables ---------- */
+.modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:#0008; z-index:50}
+.modal.open{display:flex}
+.modal .card{width:min(900px, 96vw); background:var(--card); border:1px solid #1f2a44; border-radius:16px; padding:16px}
+.modal h2{margin:0 0 10px 0; font-size:18px}
+
+.table{width:100%; border-collapse:collapse; font-size:14px}
+.table th,.table td{border-bottom:1px solid var(--border); padding:8px 6px; text-align:left}
+.table th{color:var(--muted); font-weight:600}
+.table td .btn{padding:6px 10px; font-size:12px}
+
+/* ---------- États vides ---------- */
+.empty{padding:32px; border:1px dashed var(--border); border-radius:12px; text-align:center; color:var(--muted)}
+
+/* ---------- Responsif ---------- */
+@media (max-width: 980px){
+  .toolbar{position:static}
+  main{padding-bottom:24px}
+}
